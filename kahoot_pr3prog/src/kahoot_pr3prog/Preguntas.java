@@ -53,7 +53,7 @@ public class Preguntas {
 		
 		Preguntas npreg = new Preguntas();
 		
-		String pregunta;
+		String pregunta="";
 
 		Scanner sc = new Scanner (System.in);
 		
@@ -62,24 +62,37 @@ public class Preguntas {
 		npreg.setIdpreg(idpreg);
 		npreg.setIdresp(idresp);
 		
-		do {
-		
-			System.out.println("Introduzca la pregunta:");
-		
-			pregunta=sc.nextLine();
+		try {
 			
-			if(pregunta.length()>=255) { //Reviso que la cadena no sea mas larga de la longitud del VARCHAR de la base de datos
+			do {
+			
+				System.out.println("Introduzca la pregunta:");
+			
+				pregunta=sc.nextLine();
 				
-				System.out.println("La pregunta tiene mas caracteres de los permitidos por el sistema, escriba otra");
+				if(pregunta.length()>=255) { //Reviso que la cadena no sea mas larga de la longitud del VARCHAR de la base de datos
+					
+					System.out.println("La pregunta tiene mas caracteres de los permitidos por el sistema, escriba otra");
+					
+					compro=false;
+					
+				}
+			
+			}while(!compro);
+			
+		}catch(Exception e) {
+			
+			pregunta="Error en el proceso";
+			
+			System.out.println("Ha ocurrido un error almacenando su pregunta, tendra que modificarlo mas adelante");
+			
+		}finally {
+			
+			npreg.setPregunta(pregunta);
+			
+		}
+		
 				
-				compro=false;
-				
-			}
-		
-		}while(!compro);
-		
-		npreg.setPregunta(pregunta);
-		
 		return npreg;
 						
 	}

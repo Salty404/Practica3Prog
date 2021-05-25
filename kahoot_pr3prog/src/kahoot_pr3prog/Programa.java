@@ -15,6 +15,7 @@ public class Programa {
 		int opcion=0;
 		int opcion1=0;
 		int idpreg;
+		int idresp;
 		int idcorrecto;
 		int puntos=0;
 		int contador;
@@ -27,6 +28,7 @@ public class Programa {
 		ArrayList <Integer> idrespuestas;
 		BaseDatos bd = new BaseDatos();
 		Preguntas p = new Preguntas ();
+		Respuestas r = new Respuestas ();
 		ArrayList <Preguntas> ListaPreguntas = new ArrayList <Preguntas>();
 		
 		//bd.ConectarBaseDatos();
@@ -43,7 +45,7 @@ public class Programa {
 				
 				do {
 					
-					idpreguntas = new ArrayList <Integer> (generarIDsAleatorio(10,5)); //Convierto el Hash en un ArrayList para poder acceder a las posiciones
+					idpreguntas = new ArrayList <Integer> (generarIDsAleatorio(bd.idUltimoRegistro(true),5)); //Convierto el Hash en un ArrayList para poder acceder a las posiciones, ademas de generar 5 preguntas aleatorias entre todas las que tengo en la base de datos
 					
 					for(int i=0; i<idpreguntas.size();i++) {
 						
@@ -53,11 +55,11 @@ public class Programa {
 						
 						idcorrecto=bd.idRespuestaCorrecta(idpreg);					
 						
-						idrespuestas = new ArrayList <Integer> (generarIDsAleatorio(14,3)); //Genero una lista aleatoria de 3 respuestas entre 14 de las 15 que tengo.
+						idrespuestas = new ArrayList <Integer> (generarIDsAleatorio(bd.idUltimoRegistro(false)-1,3)); //Genero una lista aleatoria de 3 respuestas entre todas las respuestas menos la ultima.
 						
 						if(idrespuestas.contains(idcorrecto)) { //Reviso si en las 3 respuestas generadas aleatoriamente está la correcta
 							
-							idrespuestas.add(15); //Es una respuesta que no esta incluida en el orden aleatorio y que para todas las preguntas es incorrecta,la añado si aleatoriamente se habia incluido la correcta en la lista.
+							idrespuestas.add(bd.idUltimoRegistro(false)); //Esta respuesta no se puede insertar aleatoriamente, si ya está la correcta, siempre va a ser errónea y si es la correcta, se añadirá en el else
 							
 						}else {
 							
@@ -103,33 +105,18 @@ public class Programa {
 					
 					opcion=10;
 					System.out.println("Estas son las preguntas:");
-					contador=bd.idUltimoRegistro(true);
+					contador=bd.idUltimoRegistro(true);  //Almaceno en contador el ultimo id de la base de datos
+					listaPreguntasRespuestas(contador,true);
 					
 				}else {
 					
 					opcion=20;
 					System.out.println("Estas son las respuestas:");
 					contador=bd.idUltimoRegistro(false);
-						
+					listaPreguntasRespuestas(contador,false);	
 				}
 				
-				for(int i=1;i<=contador;i++) {
-					
-					System.out.println("Id. "+i);
-					
-					if(opcion==10) {
 											
-						bd.MostrarTextoBD(i, true);
-						
-					}else {
-						
-						bd.MostrarTextoBD(i, false);
-						
-					}
-					
-					
-				}
-								
 				System.out.println("¿Que quieres hacer?");
 				opcion1=elegirOpcion(menu1);
 				opcion=opcion+opcion1;  //Con esto mantengo la decision inicial de que se quiere editar y cual de las opciones de edicion se ha seleccionado
@@ -144,20 +131,36 @@ public class Programa {
 						
 						if(opcion==1) {
 							
+							System.out.println("Estas son las respuestas:");
+							
+							idresp=elegirOpcion(llenarArrayBD(bd.idUltimoRegistro(false),false));
+							
+							if (idresp<1 || idresp>bd.idUltimoRegistro(false)) { //Compruebo que el id de la respuesta existe, si no es así añado una por defecto y se tendra que modificar en el apartado correspondiente
+								
+								System.out.println("No existe esa respuesta, tendra que crearla o elegir una correcta en modificar, mientras se asignara una por defecto");
+								
+								idresp=11;
+								
+							}
+							
 						}else {
 							
-							
+							idresp=11;
 						}
 						
-						ListaPreguntas.add(p.CrearPregunta(contador+1, 1));
-						
-												
+						bd.insertSQL(p.CrearPregunta(contador+1, idresp));  //Con contador +1 consigo que siempre sea la siguiente id a la ultima de la base de datos
+																		
 						break;
 					case 12:
 						break;
 					case 13:
 						break;
 					case 21:
+						
+						System.out.println("Vas a añadir una respuesta a la base de datos:");
+						
+						bd.insertSQL(r.crearRespuesta(contador+1));						
+						
 						break;
 					case 22:						
 						break;
@@ -168,7 +171,7 @@ public class Programa {
 			}
 			
 			System.out.println("¿Quieres salir del programa?");
-		
+	
 		}while(elegirOpcion(cont)==2);
 		
 		System.out.println("FIN DEL PROGRAMA");
@@ -304,4 +307,39 @@ public class Programa {
 		
 	}
 	
+	public static void listaPreguntasRespuestas (int registros, boolean EsPregunta) throws ClassNotFoundException, SQLException {
+		
+		BaseDatos bd = new BaseDatos ();
+		
+		for(int i=1;i<=registros;i++) {
+			
+			System.out.println("Id. "+i+":");
+			
+			bd.MostrarTextoBD(i, EsPregunta);
+			
+		}
+			
+	}
+	
+	public static String [] llenarArrayBD(int longitud, boolean EsPregunta) throws ClassNotFoundException, SQLException { //Este metodo me permite almacenar en un array los resultados de una consulta a la SQL
+		
+		String [] lista = new String [longitud];
+		
+		String llenado="";
+		
+		BaseDatos bd = new BaseDatos ();
+		
+		for (int i=0; i<longitud; i++) {
+			
+			llenado=bd.DevolverTexto(i+1, EsPregunta);
+			
+			lista [i] = llenado;
+			
+		}
+		
+		return lista;
+		
+	}
+	
+		
 }
