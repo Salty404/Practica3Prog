@@ -19,7 +19,6 @@ public class Programa {
 		int idcorrecto;
 		int puntos=0;
 		int contador;
-		Double aleatorio;
 		String [] menu = {"Jugar","Editar"};
 		String [] menu1 = {"Añadir","Modificar","Eliminar"};
 		String [] menu2 = {"Preguntas","Respuestas"};
@@ -29,9 +28,7 @@ public class Programa {
 		BaseDatos bd = new BaseDatos();
 		Preguntas p = new Preguntas ();
 		Respuestas r = new Respuestas ();
-		ArrayList <Preguntas> ListaPreguntas = new ArrayList <Preguntas>();
 		
-		//bd.ConectarBaseDatos();
 		
 		System.out.println("BIENVENIDO A PREGUNTAS SOBRE EL RENACIMIENTO");
 		
@@ -135,17 +132,10 @@ public class Programa {
 							
 							idresp=elegirOpcion(llenarArrayBD(bd.idUltimoRegistro(false),false));
 							
-							if (idresp<1 || idresp>bd.idUltimoRegistro(false)) { //Compruebo que el id de la respuesta existe, si no es así añado una por defecto y se tendra que modificar en el apartado correspondiente
-								
-								System.out.println("No existe esa respuesta, tendra que crearla o elegir una correcta en modificar, mientras se asignara una por defecto");
-								
-								idresp=11;
-								
-							}
-							
+														
 						}else {
 							
-							System.out.println("Se va a asignar una respuesta por defecto, tendra que crear la suya y cambiarla en el apartado: Modificar.");
+							System.out.println("Se va a asignar una respuesta por defecto, tendra que crear la suya y cambiarla en el apartado: Modificar."); //Si no tiene respuesta, le añado una erronea por defecto
 														
 							idresp=11;
 						}
@@ -155,10 +145,13 @@ public class Programa {
 						break;
 					case 12:
 														
-						modificarPreguntaRespuesta(true,cont);
+						modificarPreguntaRespuesta(true,buscarPreguntaRespuesta(true, cont));
 						
 						break;
 					case 13:
+						
+						eliminarPreguntaRespuesta(true,buscarPreguntaRespuesta(true,cont),cont);
+						
 						break;
 					case 21:
 						
@@ -169,10 +162,13 @@ public class Programa {
 						break;
 					case 22:	
 						
-						modificarPreguntaRespuesta(false,cont);
+						modificarPreguntaRespuesta(false,buscarPreguntaRespuesta(false, cont));
 						
 						break;
 					case 23:
+						
+						eliminarPreguntaRespuesta(false,buscarPreguntaRespuesta(false,cont),cont);
+						
 						break;
 				}
 				
@@ -349,22 +345,20 @@ public class Programa {
 		
 	}
 	
-	public static void modificarPreguntaRespuesta(boolean EsPregunta, String [] cont) throws ClassNotFoundException, SQLException {
+	
+	public static int buscarPreguntaRespuesta(boolean EsPregunta, String [] cont) throws ClassNotFoundException, SQLException {
 		
 		BaseDatos bd = new BaseDatos();
-		String [] opciones = new String [] {"La pregunta","Su respuesta"};
 		String busqueda = "";
 		Scanner sc = new Scanner (System.in);
-		
-		int respuesta=0;
+			
 		int opcion=0;
 		
-		System.out.println("¿Conoces el id de tu registro a modificar?");
-		
-				
 		if(elegirOpcion(cont)==1) {
-						
+			
+			
 			opcion=elegirOpcion(llenarArrayBD(bd.idUltimoRegistro(EsPregunta),EsPregunta));  //Guardo el id elegido por el usuario para hacer la modificacion
+			
 			
 						
 		}else {
@@ -390,11 +384,16 @@ public class Programa {
 			
 		}
 		
-		if (opcion<=0 || opcion>bd.idUltimoRegistro(EsPregunta)) {
-			
-			System.out.println("No existe ese registro a modificar");
-						
-		}else {
+		return opcion;
+		
+	}
+	
+	public static void modificarPreguntaRespuesta(boolean EsPregunta, int opcion) throws ClassNotFoundException, SQLException {
+		
+		BaseDatos bd = new BaseDatos();
+		String [] opciones = new String [] {"La pregunta","Su respuesta"};
+		int respuesta=0;
+				
 			
 			if(EsPregunta) {
 				
@@ -413,14 +412,8 @@ public class Programa {
 	
 					respuesta=elegirOpcion(llenarArrayBD(bd.idUltimoRegistro(false),false));  //Guardo el id elegido por el usuario para hacer la modificacion
 					
-					if(respuesta<1 || respuesta>bd.idUltimoRegistro(false)) {
-						
-						System.out.println("No existe esa respuesta");
-						
-					}else {
-						
-						bd.updateSQLrespuestas(opcion, respuesta);
-					}
+					bd.updateSQLrespuestas(opcion, respuesta);
+					
 						
 				}
 				
@@ -431,9 +424,8 @@ public class Programa {
 				bd.updateSQLtexto(opcion, escribirVarchar(), EsPregunta);
 				
 			}
-		}
 		
-		
+				
 	}
 	
 	public static String escribirVarchar () {
@@ -475,6 +467,28 @@ public class Programa {
 		}
 				
 		return varchar;
+	}
+	
+	public static void eliminarPreguntaRespuesta (boolean EsPregunta, int opcion, String [] cont) throws ClassNotFoundException, SQLException {
+		
+		BaseDatos bd = new BaseDatos();
+		
+		System.out.println("Va a eliminar el siguiente registro:");
+
+		bd.MostrarTextoBD(opcion, EsPregunta);
+		
+		System.out.println("¿Quiere continuar?");
+		
+				
+		if(elegirOpcion(cont)==1) {
+			
+			bd.eliminarSQL(opcion, EsPregunta);
+			
+		}else {
+			
+			System.out.println("Proceso cancelado. No se ha eliminado nada");
+			
+		}
 	}
 		
 }

@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class BaseDatos {
 
@@ -261,6 +263,9 @@ public class BaseDatos {
 	public int BuscarPreguntaRespuesta(boolean EsPregunta, String busqueda) throws ClassNotFoundException, SQLException {
 		
 		int id=0;
+		Scanner sc = new Scanner (System.in);
+		boolean compro=true;
+		ArrayList <Integer> results = new ArrayList <Integer>();
 		
 			try {
 				
@@ -284,12 +289,17 @@ public class BaseDatos {
 				sentenciaSQL = conexion.createStatement();
 					
 				rs=sentenciaSQL.executeQuery(sql);
-					
+				
+				System.out.println("Resultados:");
+				
 				while (rs.next()) {
 						
 					id=rs.getInt(1);
-					System.out.println("El resultado de su busqueda es: "+rs.getString(2));
+					System.out.println("Id. "+rs.getInt(1)+" "+rs.getString(2));
+					results.add(id);
 				}
+				
+				
 					
 			} catch (SQLException ex) {
 				ex.printStackTrace();
@@ -298,7 +308,36 @@ public class BaseDatos {
 				conexion.close();
 				sentenciaSQL.close();
 				
-			
+				if(results.size()>1) {  //Si la busqueda da mas de un resultado, te obliga a elegir entre ellos.
+					
+					do {
+					
+						System.out.println("Escriba el id del resultado que deseaba: ");
+						
+						try {
+							
+							id=sc.nextInt();
+																			
+						}catch(Exception e){
+							
+							System.out.println("Ha ocurrido un error");
+							compro=false;
+							
+						}finally {
+							
+							if(!results.contains(id)) {
+								
+								System.out.println("El id introducido está fuera de los resultados de busqueda.");
+								compro=false;
+							}
+							
+						}
+					
+					}while(!compro);
+					
+				}
+				
+				
 			}
 					
 				
@@ -356,6 +395,7 @@ public class BaseDatos {
 			String sql;
 			
 			int resultado;
+			
 					
 			sql="update preguntas set cod_resp='"+idresp+"' where id_preg="+idpreg+";";
 				
@@ -371,6 +411,54 @@ public class BaseDatos {
 			if(resultado>=1) {
 				
 				System.out.println("Registro modificado correctamente");
+				
+			}
+				
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			//System.out.println("Error");
+		}finally {
+			conexion.close();
+			sentenciaSQL.close();
+			
+		
+		}
+		
+	}
+	
+	public void eliminarSQL (int idreg, boolean EsPregunta) throws ClassNotFoundException, SQLException { //Metodo para insertar preguntas
+		
+		try {
+			
+			String sql;
+			
+			int resultado;
+			
+			
+			if(EsPregunta) {
+				
+				sql="delete from preguntas where id_preg="+idreg+";";
+				
+				
+			}else {
+				
+				sql="delete from respuestas where id_resp="+idreg+";";
+			
+				
+			}
+				
+																	
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas",
+					"root", "DSE260403");
+	
+			sentenciaSQL = conexion.createStatement();
+				
+			resultado=sentenciaSQL.executeUpdate(sql);
+				
+			if(resultado>=1) {
+				
+				System.out.println("Registro eliminado correctamente");
 				
 			}
 				
