@@ -258,6 +258,133 @@ public class BaseDatos {
 		
 	}
 	
+	public int BuscarPreguntaRespuesta(boolean EsPregunta, String busqueda) throws ClassNotFoundException, SQLException {
+		
+		int id=0;
+		
+			try {
+				
+				String sql;
+				
+				if(EsPregunta) {
+					
+					sql="SELECT * FROM preguntas WHERE pregunta like '%"+busqueda+"%'";
+					
+				}else {
+					
+					sql="SELECT * FROM respuestas WHERE respuesta like '%"+busqueda+"%'";
+					
+				}
+					
+									
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas",
+						"root", "DSE260403");
+		
+				sentenciaSQL = conexion.createStatement();
+					
+				rs=sentenciaSQL.executeQuery(sql);
+					
+				while (rs.next()) {
+						
+					id=rs.getInt(1);
+					System.out.println("El resultado de su busqueda es: "+rs.getString(2));
+				}
+					
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+				//System.out.println("Error");
+			}finally {
+				conexion.close();
+				sentenciaSQL.close();
+				
+			
+			}
+					
+				
+		return id;
+	}
+	
+	public void updateSQLtexto (int idreg, String modificacion, boolean EsPregunta) throws ClassNotFoundException, SQLException { //Metodo para insertar preguntas
+		
+		try {
+			
+			String sql;
+			
+			int resultado;
+				
+			if(EsPregunta) {
+				
+				sql="update preguntas set pregunta='"+modificacion+"' where id_preg="+idreg+";";
+				
+			}else {
+				
+				sql="update respuestas set respuesta='"+modificacion+"' where id_resp="+idreg+";";
+				
+			}
+														
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas",
+					"root", "DSE260403");
+	
+			sentenciaSQL = conexion.createStatement();
+				
+			resultado=sentenciaSQL.executeUpdate(sql);
+				
+			if(resultado>=1) {
+				
+				System.out.println("Registro modificado correctamente");
+				
+			}
+				
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			//System.out.println("Error");
+		}finally {
+			conexion.close();
+			sentenciaSQL.close();
+			
+		
+		}
+		
+	}
+	
+	public void updateSQLrespuestas (int idpreg, int idresp) throws ClassNotFoundException, SQLException { //Metodo para insertar preguntas
+		
+		try {
+			
+			String sql;
+			
+			int resultado;
+					
+			sql="update preguntas set cod_resp='"+idresp+"' where id_preg="+idpreg+";";
+				
+																	
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas",
+					"root", "DSE260403");
+	
+			sentenciaSQL = conexion.createStatement();
+				
+			resultado=sentenciaSQL.executeUpdate(sql);
+				
+			if(resultado>=1) {
+				
+				System.out.println("Registro modificado correctamente");
+				
+			}
+				
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			//System.out.println("Error");
+		}finally {
+			conexion.close();
+			sentenciaSQL.close();
+			
+		
+		}
+		
+	}
 	
 	
 }

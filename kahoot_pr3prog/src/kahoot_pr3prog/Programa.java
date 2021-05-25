@@ -145,6 +145,8 @@ public class Programa {
 							
 						}else {
 							
+							System.out.println("Se va a asignar una respuesta por defecto, tendra que crear la suya y cambiarla en el apartado: Modificar.");
+														
 							idresp=11;
 						}
 						
@@ -152,6 +154,9 @@ public class Programa {
 																		
 						break;
 					case 12:
+														
+						modificarPreguntaRespuesta(true,cont);
+						
 						break;
 					case 13:
 						break;
@@ -162,7 +167,10 @@ public class Programa {
 						bd.insertSQL(r.crearRespuesta(contador+1));						
 						
 						break;
-					case 22:						
+					case 22:	
+						
+						modificarPreguntaRespuesta(false,cont);
+						
 						break;
 					case 23:
 						break;
@@ -341,5 +349,132 @@ public class Programa {
 		
 	}
 	
+	public static void modificarPreguntaRespuesta(boolean EsPregunta, String [] cont) throws ClassNotFoundException, SQLException {
+		
+		BaseDatos bd = new BaseDatos();
+		String [] opciones = new String [] {"La pregunta","Su respuesta"};
+		String busqueda = "";
+		Scanner sc = new Scanner (System.in);
+		
+		int respuesta=0;
+		int opcion=0;
+		
+		System.out.println("¿Conoces el id de tu registro a modificar?");
+		
+				
+		if(elegirOpcion(cont)==1) {
+						
+			opcion=elegirOpcion(llenarArrayBD(bd.idUltimoRegistro(EsPregunta),EsPregunta));  //Guardo el id elegido por el usuario para hacer la modificacion
+			
+						
+		}else {
+			
+			try {
+				
+				System.out.println("Introduzca un texto para localizar su registro:");
+				
+				busqueda = sc.nextLine();
+				
+				opcion = bd.BuscarPreguntaRespuesta(EsPregunta, busqueda);
+				
+				
+			}catch(Exception e) {
+				
+				System.out.println("Ha habido un error en su búsqueda");
+				
+			}finally {
+				
+				System.out.println("Busqueda finalizada");
+				
+			}
+			
+		}
+		
+		if (opcion<=0 || opcion>bd.idUltimoRegistro(EsPregunta)) {
+			
+			System.out.println("No existe ese registro a modificar");
+						
+		}else {
+			
+			if(EsPregunta) {
+				
+				System.out.println("¿Que quieres modificar?");
+				
+				if(elegirOpcion(opciones)==1) {
+					
+					System.out.println("Aquí puedes escribir tu pregunta:");
+					
+					bd.updateSQLtexto(opcion, escribirVarchar(), EsPregunta);
+					
+					
+				}else {
+					
+					System.out.println("Aquí tienes todas las respuestas");
+	
+					respuesta=elegirOpcion(llenarArrayBD(bd.idUltimoRegistro(false),false));  //Guardo el id elegido por el usuario para hacer la modificacion
+					
+					if(respuesta<1 || respuesta>bd.idUltimoRegistro(false)) {
+						
+						System.out.println("No existe esa respuesta");
+						
+					}else {
+						
+						bd.updateSQLrespuestas(opcion, respuesta);
+					}
+						
+				}
+				
+			}else {
+				
+				System.out.println("Aquí puedes escribir tu respuesta:");
+			
+				bd.updateSQLtexto(opcion, escribirVarchar(), EsPregunta);
+				
+			}
+		}
+		
+		
+	}
+	
+	public static String escribirVarchar () {
+		
+		String varchar = "";
+		
+		boolean compro = true;
+		
+		Scanner sc = new Scanner (System.in);
+		
+		try {
+			
+			do {
+			
+				System.out.println("Introduzca su registro:");
+			
+				varchar=sc.nextLine();
+				
+				if(varchar.length()>=255) { //Reviso que la cadena no sea mas larga de la longitud del VARCHAR de la base de datos
+					
+					System.out.println("Su registro tiene mas caracteres de los permitidos por el sistema, escriba otra");
+					
+					compro=false;
+					
+				}
+			
+			}while(!compro);
+			
+		}catch(Exception e) {
+			
+			varchar="Error en el proceso";
+			
+			System.out.println("Ha ocurrido un error almacenando su registro, tendra que modificarlo mas adelante");
+			
+		}finally {
+			
+			System.out.println("Proceso finalizado");
+			
+		}
+				
+		return varchar;
+	}
 		
 }
