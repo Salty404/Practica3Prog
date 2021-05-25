@@ -92,6 +92,54 @@ public class BaseDatos {
 		
 		return id;
 	}
+	
+	public int idUltimoRegistro(boolean EsPregunta) throws ClassNotFoundException, SQLException {
+		
+		int id=0;
+		
+			try {
+				
+				String sql;
+				
+				if(EsPregunta) {
+					
+					sql="SELECT * FROM preguntas";
+					
+				}else {
+					
+					sql="SELECT * FROM respuestas";
+					
+				}
+					
+									
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas",
+						"root", "DSE260403");
+		
+				sentenciaSQL = conexion.createStatement();
+					
+				rs=sentenciaSQL.executeQuery(sql);
+					
+				while (rs.next()) {
+						
+					id=rs.getInt(1);
+				}
+					
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+				//System.out.println("Error");
+			}finally {
+				conexion.close();
+				sentenciaSQL.close();
+				
+			
+			}
+					
+		
+		
+		return id;
+	}
+		
 		
 	
 	

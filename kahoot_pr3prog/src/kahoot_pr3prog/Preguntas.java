@@ -1,11 +1,14 @@
 package kahoot_pr3prog;
 
+import java.util.ArrayList;
+import java.util.Scanner;
+
 public class Preguntas {
 
 	private int idpreg;
 	private String pregunta;
 	private int idresp;
-	
+		
 	public Preguntas(int idpreg, String pregunta, int idresp) {
 		super();
 		this.idpreg = idpreg;
@@ -46,7 +49,40 @@ public class Preguntas {
 		return "Preguntas [idpreg=" + idpreg + ", pregunta=" + pregunta + ", idresp=" + idresp + "]";
 	}
 	
-	
+	public Preguntas CrearPregunta(int idpreg, int idresp) {
+		
+		Preguntas npreg = new Preguntas();
+		
+		String pregunta;
+
+		Scanner sc = new Scanner (System.in);
+		
+		boolean compro=true;
+		
+		npreg.setIdpreg(idpreg);
+		npreg.setIdresp(idresp);
+		
+		do {
+		
+			System.out.println("Introduzca la pregunta:");
+		
+			pregunta=sc.nextLine();
+			
+			if(pregunta.length()>=255) { //Reviso que la cadena no sea mas larga de la longitud del VARCHAR de la base de datos
+				
+				System.out.println("La pregunta tiene mas caracteres de los permitidos por el sistema, escriba otra");
+				
+				compro=false;
+				
+			}
+		
+		}while(!compro);
+		
+		npreg.setPregunta(pregunta);
+		
+		return npreg;
+						
+	}
 	
 	
 }
