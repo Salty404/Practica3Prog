@@ -77,11 +77,11 @@ public class Programa {
 						
 					}else if(puntos<3) {
 						
-						System.out.println("Bueno, has acertado menos de la mitad, no esta mal pero se puede mejorar. ¡Animo para la proxima!");
+						System.out.println("Bueno, has acertado "+puntos+" menos de la mitad, no esta mal pero se puede mejorar. ¡Animo para la proxima!");
 						
 					}else if(puntos<=4) {
 						
-						System.out.println("¡Muy bien! Estas por encima de la media. ¡Bien hecho!");
+						System.out.println("¡Muy bien! Son "+puntos+ " aciertos. Estas por encima de la media. ¡Bien hecho!");
 						
 					}else {
 						
@@ -353,6 +353,8 @@ public class Programa {
 		Scanner sc = new Scanner (System.in);
 			
 		int opcion=0;
+		
+		System.out.println("¿Conoce el id del registro a modificar?");
 		
 		if(elegirOpcion(cont)==1) {
 			
