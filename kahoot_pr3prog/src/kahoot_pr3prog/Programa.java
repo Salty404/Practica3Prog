@@ -42,6 +42,8 @@ public class Programa {
 				
 				do {
 					
+					puntos=0;
+					
 					idpreguntas = new ArrayList <Integer> (generarIDsAleatorio(bd.idUltimoRegistro(true),5)); //Convierto el Hash en un ArrayList para poder acceder a las posiciones, ademas de generar 5 preguntas aleatorias entre todas las que tengo en la base de datos
 					
 					for(int i=0; i<idpreguntas.size();i++) {
@@ -77,7 +79,7 @@ public class Programa {
 						
 					}else if(puntos<3) {
 						
-						System.out.println("Bueno, has acertado "+puntos+" menos de la mitad, no esta mal pero se puede mejorar. ¡Animo para la proxima!");
+						System.out.println("Bueno, has acertado "+puntos+", menos de la mitad, no esta mal pero se puede mejorar. ¡Animo para la proxima!");
 						
 					}else if(puntos<=4) {
 						

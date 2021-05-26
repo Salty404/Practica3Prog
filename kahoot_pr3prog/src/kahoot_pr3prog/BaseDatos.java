@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -461,7 +462,10 @@ public class BaseDatos {
 				System.out.println("Registro eliminado correctamente");
 				
 			}
-				
+		} catch (SQLIntegrityConstraintViolationException e) {
+		
+			System.out.println("No se puede eliminar una respuesta que esté asociada a una pregunta");
+			
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			//System.out.println("Error");
