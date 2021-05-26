@@ -6,7 +6,7 @@ public class Respuestas {
 
 	private int idres;
 	private String respuesta;
-	
+
 	public Respuestas(int idres, String respuesta) {
 		super();
 		this.idres = idres;
@@ -37,21 +37,22 @@ public class Respuestas {
 	public String toString() {
 		return "Respuestas [idres=" + idres + ", respuesta=" + respuesta + "]";
 	}
-	
-	public Respuestas crearRespuesta (int idresp) {
-		
-		Respuestas nresp = new Respuestas ();
-		
-		String respuesta="";
-			
+
+	public Respuestas crearRespuesta(int idresp) { // Este metodo crea el objeto respuesta para añadirlo posteriormente
+													// a la base de datos
+
+		Respuestas nresp = new Respuestas();
+
+		String respuesta = "";
+
 		nresp.setIdres(idresp);
-		
-		respuesta=Programa.escribirVarchar();
-		
+
+		respuesta = Programa.escribirVarchar();
+
 		nresp.setRespuesta(respuesta);
-		
+
 		return nresp;
-		
-	} 
-	
+
+	}
+
 }

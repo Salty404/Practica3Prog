@@ -8,7 +8,7 @@ public class Preguntas {
 	private int idpreg;
 	private String pregunta;
 	private int idresp;
-		
+
 	public Preguntas(int idpreg, String pregunta, int idresp) {
 		super();
 		this.idpreg = idpreg;
@@ -48,23 +48,23 @@ public class Preguntas {
 	public String toString() {
 		return "Preguntas [idpreg=" + idpreg + ", pregunta=" + pregunta + ", idresp=" + idresp + "]";
 	}
-	
-	public Preguntas CrearPregunta(int idpreg, int idresp) {
-		
+
+	public Preguntas CrearPregunta(int idpreg, int idresp) { // Este metodo crea el objeto pregunta para añadirlo
+																// posteriormente a la base de datos
+
 		Preguntas npreg = new Preguntas();
-		
-		String pregunta="";
-			
+
+		String pregunta = "";
+
 		npreg.setIdpreg(idpreg);
 		npreg.setIdresp(idresp);
-		
-		pregunta=Programa.escribirVarchar();
-		
+
+		pregunta = Programa.escribirVarchar();
+
 		npreg.setPregunta(pregunta);
-				
+
 		return npreg;
-						
+
 	}
-	
-	
+
 }
