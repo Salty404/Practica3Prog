@@ -9,6 +9,9 @@ import java.util.Collections;
 
 public class Programa {
 
+	// ES NECESARIO INSERTAR LA INFORMACION DE LOGIN AL SERVIDOR DE BASE DE DATOS;
+	// EN SU CLASE CORRESPONDIENTE PARA QUE EL PROGRAMA FUNCIONE
+
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 

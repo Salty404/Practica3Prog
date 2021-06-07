@@ -43,7 +43,18 @@ public class BaseDatos {
 				sql = "SELECT * FROM respuestas WHERE id_resp=" + id;
 			}
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas", "root", "DSE260403");
+			conexion = DriverManager.getConnection("jdbc:mysql://localhost/preguntas_respuestas", "root", ""); // Inserta
+																												// aquí
+																												// la
+																												// información
+																												// de
+																												// login
+																												// a tu
+																												// servidor
+																												// de
+																												// base
+																												// de
+																												// datos
 
 			sentenciaSQL = conexion.createStatement();
 
